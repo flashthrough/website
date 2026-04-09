@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AI-native software execution. Build products 10x faster with smaller teams. Ship in weeks, not quarters." />
+  <title>Flashthrough — AI-Native Software (Warm)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f7f6f2;
+      --surface: #efeee9;
+      --border: rgba(0,0,0,0.07);
+      --text: #0f0d0a;
+      --muted: #7a7870;
+      --accent: #c8102e;
+      --accent-dim: rgba(200,16,46,0.07);
+      --blue: #c8102e;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background: #f7f6f2;
+    }
+
+    body {
+      background: #f7f6f2 !important;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    /* Grain overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: -200%;
+      width: 400%;
+      height: 400%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.018;
+      pointer-events: none;
+      z-index: 9999;
+      animation: grain 0.5s steps(2) infinite;
+    }
+
+    @keyframes grain {
+      0%,100%{transform:translate(0,0)} 10%{transform:translate(-2%,-3%)} 20%{transform:translate(3%,2%)}
+      30%{transform:translate(-1%,3%)} 40%{transform:translate(2%,-1%)} 50%{transform:translate(-3%,1%)}
+      60%{transform:translate(1%,-2%)} 70%{transform:translate(-2%,2%)} 80%{transform:translate(3%,-3%)} 90%{transform:translate(-1%,1%)}
+    }
+
+    @keyframes float {
+      0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)}
+    }
+
+    @keyframes pulse-ring {
+      0%{transform:scale(0.8);opacity:0.8} 100%{transform:scale(2.2);opacity:0}
+    }
+
+    /* Typography */
+    .syne { font-family: 'Epilogue', sans-serif; }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #0f0d0a 0%, #7a7870 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    .accent-text {
+      background: linear-gradient(135deg, #c8102e 0%, #e8405a 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    /* Components */
+    .tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: 'Epilogue', sans-serif; font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
+      background: var(--accent-dim); padding: 5px 12px; border-radius: 100px;
+      border: 1px solid rgba(200,16,46,0.2); margin-bottom: 1rem;
+    }
+
+    .cta-btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      background: var(--accent); color: #ffffff;
+      font-family: 'Epilogue', sans-serif; font-weight: 700; font-size: 0.875rem;
+      letter-spacing: 0.02em; padding: 13px 28px; border-radius: 6px;
+      border: none; cursor: pointer; transition: all 0.2s ease; text-decoration: none;
+    }
+    .cta-btn:hover { background: #a50d25; transform: translateY(-1px); box-shadow: 0 8px 32px rgba(200,16,46,0.2); }
+
+    .cta-btn-ghost {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      background: transparent; color: var(--text);
+      font-family: 'Epilogue', sans-serif; font-weight: 600; font-size: 0.875rem;
+      letter-spacing: 0.02em; padding: 13px 28px; border-radius: 6px;
+      border: 1px solid var(--border); cursor: pointer; transition: all 0.2s ease; text-decoration: none;
+    }
+    .cta-btn-ghost:hover { border-color: rgba(0,0,0,0.18); background: rgba(0,0,0,0.03); }
+
+    .card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+      transition: border-color 0.3s ease, transform 0.3s ease;
+    }
+    .card:hover { border-color: rgba(0,0,0,0.14); transform: translateY(-2px); }
+
+    .hero-glow {
+      position: absolute; border-radius: 50%; filter: blur(120px); pointer-events: none;
+    }
+
+    .speed-bar {
+      height: 2px; border-radius: 2px;
+      background: #c8102e;
+    }
+
+    /* Progress bar */
+    #progress-bar {
+      position: fixed; top: 60px; left: 0; right: 0; height: 2px; z-index: 99;
+    }
+    #progress-fill {
+      height: 100%; width: 0%;
+      background: #c8102e;
+      transition: width 0.1s linear;
+    }
+
+    /* Nav */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      transition: background 0.3s ease, border-color 0.3s ease;
+      border-bottom: 1px solid transparent;
+    }
+    nav.scrolled {
+      background: rgba(247,246,242,0.94);
+      border-bottom-color: var(--border);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .nav-inner {
+      max-width: 1200px; margin: 0 auto; padding: 0 1.25rem;
+      height: 60px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; }
+    .nav-logo-icon {
+      width: 28px; height: 28px; border-radius: 6px; background: var(--accent);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .nav-links { display: none; align-items: center; gap: 2.5rem; }
+    .nav-links a {
+      color: var(--muted); font-size: 0.85rem; text-decoration: none; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    /* Orb */
+    .orb-wrap { width: 180px; height: 180px; position: relative; margin: 0 auto; }
+    .orb-ring {
+      position: absolute; inset: 0; border-radius: 50%;
+      border: 1px solid rgba(200,16,46,0.12);
+    }
+    .orb-ring:nth-child(1) { animation: pulse-ring 2.4s cubic-bezier(0.4,0,0.6,1) 0s infinite; }
+    .orb-ring:nth-child(2) { animation: pulse-ring 2.4s cubic-bezier(0.4,0,0.6,1) 0.6s infinite; }
+    .orb-ring:nth-child(3) { animation: pulse-ring 2.4s cubic-bezier(0.4,0,0.6,1) 1.2s infinite; }
+    .orb-core {
+      position: absolute; inset: 20%; border-radius: 50%;
+      background: radial-gradient(circle at 40% 35%, rgba(200,16,46,0.1) 0%, rgba(200,16,46,0.04) 50%, transparent 70%);
+      border: 1px solid rgba(200,16,46,0.18);
+      animation: float 4s ease-in-out infinite;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .orb-dot {
+      position: absolute; top: 50%; left: 50%;
+      width: 6px; height: 6px; border-radius: 50%;
+    }
+
+    /* Section layouts — mobile first */
+    .section-pad { padding: 4rem 1.25rem; }
+    .section-surface {
+      padding: 4rem 1.25rem;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .section-inner { max-width: 1200px; margin: 0 auto; }
+    .section-inner-sm { max-width: 1100px; margin: 0 auto; }
+    .section-heading {
+      font-family: 'Epilogue', sans-serif; font-weight: 800;
+      letter-spacing: -0.03em; font-size: clamp(1.8rem, 5vw, 2.8rem); line-height: 1.12;
+    }
+    .section-center { text-align: center; margin-bottom: 2.5rem; }
+
+    /* Hero */
+    .hero-section {
+      padding: 96px 1.25rem 4rem;
+      min-height: 100svh; display: flex; align-items: center;
+      position: relative; overflow: hidden;
+    }
+    .hero-grid { display: flex; flex-direction: column; gap: 2.5rem; width: 100%; max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
+    .hero-visual { display: flex; justify-content: center; order: -1; }
+    .hero-headline {
+      font-family: 'Epilogue', sans-serif; font-weight: 800;
+      font-size: clamp(2rem, 8vw, 4.2rem); line-height: 1.08;
+      letter-spacing: -0.03em; margin-bottom: 1.25rem;
+    }
+    .hero-sub { color: var(--muted); font-size: 1rem; line-height: 1.7; margin-bottom: 2rem; max-width: 440px; }
+    .hero-cta-row { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; }
+    .hero-stats { display: flex; flex-wrap: wrap; gap: 1.25rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+    .hero-stat-val { font-family: 'Epilogue', sans-serif; font-size: 1.2rem; font-weight: 800; }
+    .hero-stat-label { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+    .hero-grid-bg {
+      position: absolute; inset: 0;
+      background-image: linear-gradient(rgba(0,0,0,0.04) 1px,transparent 1px), linear-gradient(90deg,rgba(0,0,0,0.04) 1px,transparent 1px);
+      background-size: 80px 80px;
+      -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 50%,black 0%,transparent 100%);
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 50%,black 0%,transparent 100%);
+    }
+
+    /* Shift timeline */
+    .shift-wrap { position: relative; padding: 1rem 0; }
+    .shift-spine { position: absolute; left: 10px; top: 0; bottom: 0; width: 1px; background: var(--border); }
+    .shift-row { display: flex; margin-bottom: 1.5rem; position: relative; }
+    .shift-dot { position: absolute; left: 6px; top: 50%; width: 10px; height: 10px; border-radius: 50%; transform: translateY(-50%); z-index: 2; }
+    .shift-card { margin-left: 2rem; width: 100%; padding: 1.5rem; }
+    .shift-era {
+      font-family: 'Epilogue', sans-serif; font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 0.75rem;
+    }
+    .shift-title { font-family: 'Epilogue', sans-serif; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem; }
+    .shift-body { color: var(--muted); font-size: 0.85rem; line-height: 1.65; }
+
+    /* VS grid */
+    .vs-grid { display: flex; flex-direction: column; }
+    .vs-col { padding: 1.5rem; border-radius: 12px; }
+    .vs-col-title { font-family: 'Epilogue', sans-serif; font-weight: 800; font-size: 1rem; }
+    .vs-col-sub { font-size: 0.72rem; color: var(--muted); opacity: 0.6; }
+    .vs-col-header { margin-bottom: 1.5rem; }
+    .vs-sep { display: flex; align-items: center; gap: 1rem; padding: 0.5rem 0; }
+    .vs-sep-line { flex: 1; height: 1px; background: var(--border); }
+    .vs-sep-label { font-family: 'Epilogue', sans-serif; font-size: 0.75rem; font-weight: 800; color: var(--muted); letter-spacing: 0.1em; flex-shrink: 0; }
+    .vs-row { margin-bottom: 1rem; }
+    .vs-label { font-size: 0.7rem; color: var(--muted); margin-bottom: 0.25rem; letter-spacing: 0.06em; text-transform: uppercase; }
+    .vs-val { font-size: 0.875rem; margin-bottom: 5px; }
+    .vs-track { height: 2px; border-radius: 2px; overflow: hidden; }
+
+    /* Steps */
+    .steps-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    .step-label { font-family:'Epilogue', sans-serif; font-size:0.65rem; font-weight:800; letter-spacing:0.15em; color:var(--muted); margin-bottom: 0.4rem; }
+    .step-title { font-family: 'Epilogue', sans-serif; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.6rem; }
+    .step-body { color: var(--muted); font-size: 0.83rem; line-height: 1.7; }
+    .step-num-bg {
+      position: absolute; top: 1rem; right: 1.25rem;
+      font-family: 'Epilogue', sans-serif; font-size: 2.5rem; font-weight: 900;
+      color: rgba(0,0,0,0.06); line-height: 1; pointer-events: none;
+    }
+
+    /* Builds */
+    .builds-outer { display: flex; flex-direction: column; gap: 2rem; }
+    .builds-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.875rem; }
+    .build-title { font-family: 'Epilogue', sans-serif; font-weight: 700; font-size: 0.875rem; margin-bottom: 0.4rem; }
+    .build-body { color: var(--muted); font-size: 0.78rem; line-height: 1.65; }
+
+    /* Proof */
+    .proof-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    .proof-quote-mark { font-size: 1.4rem; color: var(--accent); margin-bottom: 0.875rem; font-family: Georgia, serif; }
+    .proof-quote { color: var(--text); font-size: 0.875rem; line-height: 1.75; margin-bottom: 1.25rem; }
+    .proof-author { display: flex; align-items: center; gap: 0.75rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+    .proof-initials {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--accent-dim); border: 1px solid rgba(200,16,46,0.2);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      font-family: 'Epilogue', sans-serif; font-size: 0.65rem; font-weight: 800; color: var(--accent);
+    }
+    .proof-name { font-size: 0.78rem; color: var(--muted); }
+
+    /* Footer */
+    .footer-inner {
+      display: flex; flex-direction: column; gap: 1rem;
+      max-width: 1200px; margin: 0 auto; padding: 2rem 1.25rem;
+    }
+    .footer-logo { display: flex; align-items: center; gap: 8px; }
+    .footer-logo-icon {
+      width: 22px; height: 22px; border-radius: 5px; background: var(--accent);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .footer-copy { color: var(--muted); font-size: 0.78rem; }
+    .footer-links { display: flex; gap: 1.5rem; }
+    .footer-links a { color: var(--muted); font-size: 0.8rem; text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--text); }
+
+    /* ==== TABLET (600px+) ==== */
+    @media (min-width: 600px) {
+      .hero-cta-row { flex-direction: row; align-items: center; }
+      .proof-grid { grid-template-columns: 1fr 1fr; }
+      .orb-wrap { width: 220px; height: 220px; }
+      .section-pad { padding: 5rem 1.5rem; }
+      .section-surface { padding: 5rem 1.5rem; }
+      .hero-section { padding: 110px 1.5rem 5rem; }
+    }
+
+    /* ==== DESKTOP (900px+) ==== */
+    @media (min-width: 900px) {
+      .nav-inner { height: 64px; padding: 0 2rem; }
+      .nav-links { display: flex; }
+      #progress-bar { top: 64px; }
+
+      .hero-section { padding: 130px 2rem 6rem; }
+      .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; flex-direction: unset; }
+      .hero-visual { order: 0; }
+      .orb-wrap { width: 280px; height: 280px; }
+
+      .shift-spine { left: 50%; transform: translateX(-50%); }
+      .shift-dot { left: 50%; transform: translate(-50%, -50%) !important; }
+      .shift-row { justify-content: flex-start; }
+      .shift-row.right { justify-content: flex-end; }
+      .shift-card { margin-left: 0; max-width: 420px; }
+      .shift-row.left .shift-card { margin-right: calc(50% + 2rem); }
+      .shift-row.right .shift-card { margin-left: calc(50% + 2rem); }
+
+      .vs-grid { flex-direction: row; align-items: stretch; }
+      .vs-col { flex: 1; }
+      .vs-sep { flex-direction: column; min-width: 48px; padding: 0; }
+      .vs-sep-line { flex: 1; width: 1px; height: auto; }
+
+      .steps-grid { grid-template-columns: repeat(4, 1fr); }
+
+      .builds-outer { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; flex-direction: unset; }
+
+      .proof-grid { grid-template-columns: repeat(3, 1fr); }
+
+      .footer-inner { flex-direction: row; align-items: center; justify-content: space-between; padding: 2.5rem 2rem; }
+
+      .section-pad { padding: 6rem 2rem; }
+      .section-surface { padding: 6rem 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Scroll progress -->
+  <div id="progress-bar"><div id="progress-fill"></div></div>
+
+  <!-- Nav -->
+  <nav id="main-nav">
+    <div class="nav-inner">
+      <div class="nav-logo">
+        <div class="nav-logo-icon">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 12L7 4L11 9L14 5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <span class="syne" style="font-weight:700;font-size:0.95rem;letter-spacing:-0.01em;">flashthrough</span>
+      </div>
+      <div class="nav-links">
+        <a href="#services">Services</a>
+        <a href="#process">Process</a>
+        <a href="#proof">Work</a>
+        <a href="#contact">About</a>
+      </div>
+      <a href="#contact" class="cta-btn" style="padding:9px 18px;font-size:0.8rem;flex-shrink:0;">Start a project</a>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- Hero -->
+    <section class="hero-section">
+      <div class="hero-glow" style="width:min(600px,100vw);height:min(600px,100vw);top:10%;right:-10%;background:radial-gradient(circle,rgba(200,16,46,0.06) 0%,transparent 70%);"></div>
+      <div class="hero-glow" style="width:min(500px,80vw);height:min(500px,80vw);top:60%;left:-10%;background:radial-gradient(circle,rgba(200,16,46,0.04) 0%,transparent 70%);"></div>
+      <div class="hero-grid-bg"></div>
+      <div class="hero-grid">
+        <div>
+          <span class="tag">AI-Native Services</span>
+          <h1 class="hero-headline">
+            The world moved from
+            <span style="color:var(--muted);text-decoration:line-through;text-decoration-color:rgba(232,255,71,0.5);">ships</span>
+            to <span class="accent-text">planes.</span><br>Software already has.
+          </h1>
+          <p class="hero-sub">The shift already happened. We build with the teams and tools of the new era.</p>
+          <div class="hero-cta-row">
+            <a href="#contact" class="cta-btn">Start a project</a>
+            <a href="#process" class="cta-btn-ghost">See how it works</a>
+          </div>
+          <div class="hero-stats">
+            <div><div class="hero-stat-val syne">10x</div><div class="hero-stat-label">faster delivery</div></div>
+            <div><div class="hero-stat-val syne">~3</div><div class="hero-stat-label">person teams</div></div>
+            <div><div class="hero-stat-val syne">weeks</div><div class="hero-stat-label">not quarters</div></div>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="orb-wrap">
+            <div class="orb-ring"></div>
+            <div class="orb-ring"></div>
+            <div class="orb-ring"></div>
+            <div class="orb-core">
+              <svg width="36" height="36" viewBox="0 0 48 48" fill="none">
+                <path d="M8 38L22 10L36 28L42 18" stroke="#c8102e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="42" cy="18" r="3" fill="#c8102e"/>
+              </svg>
+            </div>
+            <div class="orb-dot" style="background:#c8102e;transform:rotate(0deg) translateX(80px) translateY(-50%);"></div>
+            <div class="orb-dot" style="background:rgba(0,0,0,0.12);transform:rotate(90deg) translateX(80px) translateY(-50%);"></div>
+            <div class="orb-dot" style="background:rgba(0,0,0,0.12);transform:rotate(180deg) translateX(80px) translateY(-50%);"></div>
+            <div class="orb-dot" style="background:rgba(0,0,0,0.12);transform:rotate(270deg) translateX(80px) translateY(-50%);"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- The Shift -->
+    <section class="section-pad" style="border-top:1px solid var(--border);">
+      <div class="section-inner">
+        <div class="section-center">
+          <span class="tag">The Shift</span>
+          <h2 class="section-heading">Software development had its <span class="gradient-text">paradigm shift.</span></h2>
+          <p style="color:var(--muted);margin-top:1rem;font-size:0.95rem;max-width:520px;margin:1rem auto 0;">
+            The transition already happened. Most companies just have not caught up yet. The teams that did are shipping faster, spending less, and winning.
+          </p>
+        </div>
+        <div class="shift-wrap">
+          <div class="shift-spine"></div>
+          <!-- Then -->
+          <div class="shift-row left">
+            <div class="card shift-card">
+              <div class="shift-era" style="color:var(--muted);">Then</div>
+              <div class="shift-title">Large teams, slow cycles</div>
+              <p class="shift-body">Dozens of engineers, quarter-long sprints, waterfall planning, bloated overhead.</p>
+            </div>
+            <div class="shift-dot" style="background:var(--muted);"></div>
+          </div>
+          <!-- Now -->
+          <div class="shift-row right">
+            <div class="card shift-card">
+              <div class="shift-era" style="color:var(--accent);">Now</div>
+              <div class="shift-title">Small teams, AI velocity</div>
+              <p class="shift-body">3 to 5 person squads with AI augmentation, shipping real product in weeks.</p>
+            </div>
+            <div class="shift-dot" style="background:var(--accent);"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Ships vs Planes -->
+    <section class="section-surface">
+      <div class="section-inner-sm">
+        <div class="section-center">
+          <h2 class="section-heading">Ships vs. Planes</h2>
+          <p style="color:var(--muted);margin-top:0.75rem;font-size:0.9rem;">The same destination. A completely different way to get there.</p>
+        </div>
+        <div class="vs-grid">
+          <!-- Ships -->
+          <div class="vs-col" style="background:rgba(0,0,0,0.02);border:1px solid var(--border);">
+            <div class="vs-col-header">
+              <div class="vs-col-title syne" style="color:var(--muted);">Ships</div>
+              <div class="vs-col-sub">How it used to work</div>
+            </div>
+            <div class="vs-row">
+              <div class="vs-label">Team size</div>
+              <div class="vs-val" style="color:#6b6b80;">20 to 80 engineers</div>
+              <div class="vs-track" style="background:rgba(0,0,0,0.06);"><div style="height:100%;width:20%;background:rgba(0,0,0,0.1);border-radius:2px;"></div></div>
+            </div>
+            <div class="vs-row">
+              <div class="vs-label">Delivery cycle</div>
+              <div class="vs-val" style="color:#6b6b80;">2 to 4 quarters</div>
+              <div class="vs-track" style="background:rgba(0,0,0,0.06);"><div style="height:100%;width:15%;background:rgba(0,0,0,0.1);border-radius:2px;"></div></div>
+            </div>
+            <div class="vs-row">
+              <div class="vs-label">Iteration speed</div>
+              <div class="vs-val" style="color:#6b6b80;">Weeks per change</div>
+              <div class="vs-track" style="background:rgba(0,0,0,0.06);"><div style="height:100%;width:20%;background:rgba(0,0,0,0.1);border-radius:2px;"></div></div>
+            </div>
+            <div class="vs-row">
+              <div class="vs-label">Cost</div>
+              <div class="vs-val" style="color:#6b6b80;">Millions per year</div>
+              <div class="vs-track" style="background:rgba(0,0,0,0.06);"><div style="height:100%;width:15%;background:rgba(0,0,0,0.1);border-radius:2px;"></div></div>
+            </div>
+            <div class="vs-row">
+              <div class="vs-label">AI leverage</div>
+              <div class="vs-val" style="color:#6b6b80;">Minimal</div>
+              <div class="vs-track" style="background:rgba(0,0,0,0.06);"><div style="height:100%;width:10%;background:rgba(0,0,0,0.1);border-radius:2px;"></div></div>
+            </div>
+          </div>
+
+          <!-- VS divider -->
+          <div class="vs-sep">
+            <div class="vs-sep-line"></div>
+            <span class="vs-sep-label syne">VS</span>
+            <div class="vs-sep-line"></div>
+          </div>
+
+          <!-- Planes -->
+          <div class="vs-col" style="background:rgba(200,16,46,0.04);border:1px solid rgba(200,16,46,0.15);">
+            <div class="vs-col-header">
+              <div class="vs-col-title syne" style="color:var(--accent);">Planes</div>
+              <div class="vs-col-sub">The Flashthrough model</div>
+            </div>
+            <div class="vs-row">
+              <div class="vs-label">Team size</div>
+              <div class="vs-val" style="color:var(--text);">3 to 6 people</div>
+              <div class="vs-track"><div class="speed-bar" style="width:80%;"></div></div>
+            </div>
+            <div class="vs-row">
+              <div class="vs-label">Delivery cycle</div>
+              <div class="vs-val" style="color:var(--text);">2 to 8 weeks</div>
+              <div class="vs-track"><div class="speed-bar" style="width:90%;"></div></div>
+            </div>
+            <div class="vs-row">
+              <div class="vs-label">Iteration speed</div>
+              <div class="vs-val" style="color:var(--text);">Days per change</div>
+              <div class="vs-track"><div class="speed-bar" style="width:85%;"></div></div>
+            </div>
+            <div class="vs-row">
+              <div class="vs-label">Cost</div>
+              <div class="vs-val" style="color:var(--text);">Fraction of old model</div>
+              <div class="vs-track"><div class="speed-bar" style="width:88%;"></div></div>
+            </div>
+            <div class="vs-row">
+              <div class="vs-label">AI leverage</div>
+              <div class="vs-val" style="color:var(--text);">Core to everything</div>
+              <div class="vs-track"><div class="speed-bar" style="width:95%;"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Process -->
+    <section id="process" class="section-pad" style="border-top:1px solid var(--border);">
+      <div class="section-inner">
+        <div style="margin-bottom:2.5rem;">
+          <span class="tag">How it works</span>
+          <h2 class="section-heading">Four steps.<br>From idea to live product.</h2>
+        </div>
+        <div class="steps-grid">
+          <div class="card" style="padding:1.75rem;position:relative;overflow:hidden;">
+            <div class="step-num-bg">01</div>
+            <div class="step-label">Step 01</div>
+            <div class="step-title syne">Define</div>
+            <p class="step-body">We scope your product in a focused session. Clear outcome, clear timeline, no ambiguity.</p>
+          </div>
+          <div class="card" style="padding:1.75rem;position:relative;overflow:hidden;">
+            <div class="step-num-bg">02</div>
+            <div class="step-label">Step 02</div>
+            <div class="step-title syne">AI builds</div>
+            <p class="step-body">Our AI-augmented team generates architecture, code, and components at machine speed.</p>
+          </div>
+          <div class="card" style="padding:1.75rem;position:relative;overflow:hidden;">
+            <div class="step-num-bg">03</div>
+            <div class="step-label">Step 03</div>
+            <div class="step-title syne">Humans refine</div>
+            <p class="step-body">Senior engineers and product thinkers shape quality, edge cases, and user experience.</p>
+          </div>
+          <div class="card" style="padding:1.75rem;position:relative;overflow:hidden;">
+            <div class="step-num-bg">04</div>
+            <div class="step-label">Step 04</div>
+            <div class="step-title syne">Ship</div>
+            <p class="step-body">You go live. Real product, real users. In weeks, not quarters.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- What We Build -->
+    <section id="services" class="section-pad" style="border-top:1px solid var(--border);">
+      <div class="section-inner">
+        <div class="builds-outer">
+          <div>
+            <span class="tag">Services</span>
+            <h2 class="section-heading" style="margin-bottom:1rem;">What we build</h2>
+            <p style="color:var(--muted);line-height:1.75;font-size:0.95rem;max-width:360px;">
+              From AI-powered SaaS to internal tooling, we build software that compounds. Every product we ship is designed to make the next one faster.
+            </p>
+          </div>
+          <div class="builds-grid">
+            <div class="card" style="padding:1.25rem;">
+              <div class="build-title syne">AI Products</div>
+              <p class="build-body">LLM-powered apps, copilots, agents, and intelligent workflows.</p>
+            </div>
+            <div class="card" style="padding:1.25rem;">
+              <div class="build-title syne">Internal Tools</div>
+              <p class="build-body">Ops dashboards, admin systems, and automation interfaces.</p>
+            </div>
+            <div class="card" style="padding:1.25rem;">
+              <div class="build-title syne">Automation Systems</div>
+              <p class="build-body">End-to-end pipelines that replace manual processes with AI.</p>
+            </div>
+            <div class="card" style="padding:1.25rem;">
+              <div class="build-title syne">Full-Stack Apps</div>
+              <p class="build-body">Consumer and B2B products from zero to production-ready.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Proof -->
+    <section id="proof" class="section-surface">
+      <div class="section-inner">
+        <div class="section-center">
+          <span class="tag">Proof</span>
+          <h2 class="section-heading">Built in weeks, not quarters.</h2>
+        </div>
+        <div class="proof-grid">
+          <div class="card" style="padding:1.75rem;">
+            <div class="proof-quote-mark" style="color:var(--accent);">"</div>
+            <p class="proof-quote">We went from idea to first users in 6 weeks. That would have taken us 2 to 3 quarters before.</p>
+            <div class="proof-author">
+              <div class="proof-initials">JM</div>
+              <span class="proof-name">Founder, B2B SaaS</span>
+            </div>
+          </div>
+          <div class="card" style="padding:1.75rem;">
+            <div class="proof-quote-mark" style="color:var(--accent);">"</div>
+            <p class="proof-quote">The AI-native approach is not a gimmick. The output quality is indistinguishable from a full eng team.</p>
+            <div class="proof-author">
+              <div class="proof-initials">SR</div>
+              <span class="proof-name">CTO, Fintech Startup</span>
+            </div>
+          </div>
+          <div class="card" style="padding:1.75rem;">
+            <div class="proof-quote-mark" style="color:var(--accent);">"</div>
+            <p class="proof-quote">Built in weeks, not quarters. We saw production code by week two.</p>
+            <div class="proof-author">
+              <div class="proof-initials">AK</div>
+              <span class="proof-name">Head of Product, Series A</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section id="contact" class="section-pad" style="position:relative;overflow:hidden;">
+      <div class="hero-glow" style="width:min(700px,130vw);height:min(700px,130vw);top:50%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(200,16,46,0.05) 0%,transparent 60%);"></div>
+      <div style="max-width:800px;margin:0 auto;text-align:center;position:relative;z-index:1;">
+        <span class="tag" style="margin-bottom:1.25rem;">Ready to fly</span>
+        <h2 class="section-heading" style="font-size:clamp(2rem,5vw,3.5rem);margin-bottom:1.25rem;">
+          Ships are gone.<br><span class="accent-text">Are you flying yet?</span>
+        </h2>
+        <p style="color:var(--muted);font-size:0.95rem;line-height:1.75;max-width:480px;margin:0 auto 2rem;">
+          The era of slow, bloated software teams is over. The companies that already made the shift are pulling ahead. We help you get there.
+        </p>
+        <div style="display:flex;flex-wrap:wrap;gap:0.875rem;justify-content:center;">
+          <a href="/cdn-cgi/l/email-protection#b2dad7dededdf2d4ded3c1dac6dac0ddc7d5da9cd3db" class="cta-btn" style="font-size:0.95rem;padding:14px 32px;">Work with us</a>
+          <a href="#process" class="cta-btn-ghost" style="font-size:0.95rem;padding:14px 32px;">Learn the process</a>
+        </div>
+        <p style="color:var(--muted);font-size:0.75rem;margin-top:1.25rem;opacity:0.6;">Typically respond within 24 hours</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer style="border-top:1px solid var(--border);">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <div class="footer-logo-icon">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3 12L7 4L11 9L14 5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <span class="syne" style="font-weight:700;font-size:0.85rem;">flashthrough.ai</span>
+      </div>
+      <span class="footer-copy">2026 Flashthrough. AI-native software.</span>
+      <div class="footer-links">
+        <a href="#">Twitter</a>
+        <a href="#">LinkedIn</a>
+      </div>
+    </div>
+  </footer>
+
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    // Scroll progress + nav
+    const nav = document.getElementById('main-nav');
+    const fill = document.getElementById('progress-fill');
+
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.body.scrollHeight - window.innerHeight;
+      fill.style.width = docHeight > 0 ? (scr
