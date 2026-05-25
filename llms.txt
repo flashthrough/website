@@ -1,6 +1,6 @@
 # Flashthrough
 
-> AI-native service execution. We build products 10x faster with smaller teams, shipping in weeks instead of quarters.
+> AI-native services execution. We build products 10x faster with smaller teams, shipping in weeks instead of quarters.
 
 Flashthrough is a software services company built around the shift from large, slow engineering teams ("ships") to small, AI-augmented squads ("planes"). We pair AI-generated architecture and code with senior human engineers who refine quality, edge cases, and user experience.
 
