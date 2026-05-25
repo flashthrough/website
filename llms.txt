@@ -1,0 +1,30 @@
+# Flashthrough
+
+> AI-native service execution. We build products 10x faster with smaller teams, shipping in weeks instead of quarters.
+
+Flashthrough is a software services company built around the shift from large, slow engineering teams ("ships") to small, AI-augmented squads ("planes"). We pair AI-generated architecture and code with senior human engineers who refine quality, edge cases, and user experience.
+
+## How we work
+
+- **Define** — scope the product in a focused session with a clear outcome and timeline.
+- **AI builds** — AI-augmented team generates architecture, code, and components at machine speed.
+- **Humans refine** — senior engineers and product thinkers shape quality and UX.
+- **Ship** — live product with real users in weeks, not quarters.
+
+## What we build
+
+- AI products: LLM-powered apps, copilots, agents, intelligent workflows
+- Internal tools: ops dashboards, admin systems, automation interfaces
+- Automation systems: end-to-end pipelines replacing manual processes
+- Full-stack apps: consumer and B2B products from zero to production
+
+## Model
+
+- Team size: 3 to 5 people per engagement
+- Delivery cycle: 2 to 8 weeks
+- Iteration speed: days per change
+- AI leverage: core to every stage
+
+## Links
+
+- [Homepage](https://flashthrough.ai/)
